@@ -1,3 +1,19 @@
+{#
+  CrateDB lists OBJECT sub-fields (e.g. `classification['type']`) as separate
+  columns in information_schema. They are not independently insertable / DDL-able
+  -- only the parent OBJECT column is. Reuse the postgres implementation, then drop
+  the bracketed sub-fields so incremental INSERT column lists, contracts, and
+  schema-change detection operate on real top-level columns only. See issue #10.
+#}
+{% macro cratedb__get_columns_in_relation(relation) -%}
+  {%- set columns = postgres__get_columns_in_relation(relation) -%}
+  {%- set filtered = [] -%}
+  {%- for column in columns if '[' not in column.name -%}
+    {%- do filtered.append(column) -%}
+  {%- endfor -%}
+  {{ return(filtered) }}
+{%- endmacro %}
+
 {% macro get_create_table_as_sql(temporary, relation, sql) -%}
   {{ adapter.dispatch('get_create_table_as_sql', 'cratedb')(False, relation, sql) }}
 {%- endmacro %}

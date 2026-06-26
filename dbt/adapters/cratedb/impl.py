@@ -116,15 +116,6 @@ class CrateDBAdapter(PostgresAdapter):
         except DbtRuntimeError as exc:
             raise CrossDbReferenceProhibitedError(self.type(), exc.msg)
 
-    def get_columns_in_relation(self, relation):
-        # CrateDB lists OBJECT sub-fields (e.g. classification['type']) as
-        # separate columns in information_schema. They are not independently
-        # insertable / DDL-able -- only the parent OBJECT column is. Drop them so
-        # incremental INSERT column lists, contracts, and schema-change detection
-        # operate on real top-level columns only. See issue #10.
-        columns = super().get_columns_in_relation(relation)
-        return [c for c in columns if "[" not in c.name]
-
     def get_rows_different_sql(
         self,
         relation_a: BaseRelation,
