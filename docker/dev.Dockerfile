@@ -1,5 +1,5 @@
 # this image does not get published, it is intended for local development only, see `Makefile` for usage
-FROM ubuntu:24.04 AS base
+FROM ubuntu:26.04 AS base
 
 # prevent python installation from asking for time zone region
 ARG DEBIAN_FRONTEND=noninteractive
