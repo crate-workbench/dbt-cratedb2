@@ -87,14 +87,8 @@ jobs:
         python-version: ["3.10", "3.13"]
         cratedb-version: [ 'nightly' ]
 
-    services:
-      cratedb:
-        image: crate/crate:${{ matrix.cratedb-version }}
-        ports:
-          - 4200:4200
-          - 5432:5432
-        env:
-          CRATE_HEAP_SIZE: 8g
+    env:
+      CRATEDB_VERSION: ${{ matrix.cratedb-version }}
 
     steps:
       - name: Check out repository
@@ -106,6 +100,9 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ inputs.adapter_branch }}
+
+      - name: Start CrateDB
+        run: docker compose --file=.github/compose.yaml up --detach
 
       - name: Update Adapters and Core branches
         if: ${{ github.event_name == 'workflow_call' || github.event_name == 'workflow_dispatch' }}

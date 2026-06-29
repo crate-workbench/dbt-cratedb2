@@ -131,7 +131,7 @@ class TestRetry:
         results = run_dbt(["build", "--select", "second_model"])
 
         # ...but it should fail when run with warn-error, due to a warning...
-        results = run_dbt(["--warn-error", "build", "--select", "second_model"], expect_pass=False)
+        results = run_dbt(["--warn-error", "build", "--select", "second_model", "--show-all-deprecations", "--no-partial-parse"], expect_pass=False)
 
         expected_statuses = {
             "second_model": RunStatus.Success,

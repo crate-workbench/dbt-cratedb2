@@ -1,0 +1,31 @@
+# Service composition file for Docker Compose or Podman Compose
+# https://cratedb.com/docs/guide/integrate/amqp/
+
+services:
+
+  cratedb:
+    image: docker.io/crate/crate:${CRATEDB_VERSION:-nightly}
+    command: >
+      CRATE_HEAP_SIZE=8g crate \
+        '-Ccluster.max_shards_per_node=5000' \
+        '-Cdiscovery.type=single-node'
+    ports:
+      - "4200:4200/tcp"
+      - "5432:5432/tcp"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4200/"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+
+  # -------
+  # Bundler
+  # -------
+  # Wait for all defined services to be fully available by probing their health
+  # status, even when using `docker compose up --detach`.
+  # https://marcopeg.com/2019/docker-compose-healthcheck/
+  start-dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      cratedb:
+        condition: service_healthy
