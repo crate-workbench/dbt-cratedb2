@@ -28,7 +28,7 @@ dependencies = [
     "dbt-core<1.12",
     "dbt-postgres>=1.9.0,<1.10",
     "sqlparse<0.6",
-    "sql-metadata<3",
+    "sql-metadata<4",
 ]
 [project.urls]
 Changelog = "https://github.com/crate/dbt-cratedb2/blob/main/CHANGELOG.md"
