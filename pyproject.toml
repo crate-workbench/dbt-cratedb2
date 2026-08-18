@@ -27,7 +27,7 @@ classifiers = [
 dependencies = [
     "dbt-core<1.12",
     "dbt-postgres>=1.9.0,<1.10",
-    "sqlparse<0.6",
+    "sqlparse<0.7",
     "sql-metadata<3",
 ]
 [project.urls]
